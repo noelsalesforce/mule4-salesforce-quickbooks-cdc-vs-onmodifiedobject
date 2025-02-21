@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:slack="http://www.mulesoft.org/schema/mule/slack" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:quickbooks-online-connector-mule-4="http://www.mulesoft.org/schema/mule/quickbooks-online-connector-mule-4" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/quickbooks-online-connector-mule-4 http://www.mulesoft.org/schema/mule/quickbooks-online-connector-mule-4/current/mule-quickbooks-online-connector-mule-4.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="8d8655f7-1b53-43aa-9ab3-118b115b8a97" file="credentials.properties" />
+	<quickbooks-online-connector-mule-4:config name="Quickbooks_Online_Connector_Mule4Connector_Config" doc:name="Quickbooks Online Connector Mule4Connector Config" doc:id="ca8c2429-5fda-4e8d-833b-ab79c5ab09ec" >
+		<quickbooks-online-connector-mule-4:auth-connection baseUri="https://sandbox-quickbooks.api.intuit.com/v3/company/${qb.sandboxCompanyId}" >
+			<quickbooks-online-connector-mule-4:oauth-authorization-code consumerKey="${qb.consumerKey}" consumerSecret="${qb.consumerSecret}" scopes="${qb.scopes}"/>
+			<quickbooks-online-connector-mule-4:oauth-callback-config listenerConfig="HTTP_Listener_config" callbackPath="${qb.callbackPath}" authorizePath="${qb.authorizePath}" externalCallbackUrl="${qb.externalCallbackPath}" />
+			<quickbooks-online-connector-mule-4:oauth-store-config objectStore="Object_store" />
+		</quickbooks-online-connector-mule-4:auth-connection>
+	</quickbooks-online-connector-mule-4:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="922a78fb-7e8b-4391-89b1-3beba26dc444" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="5910dbaf-ee2d-4b0b-85e0-2c149e8b25ec" >
+		<salesforce:basic-connection username="${sfdc.username}" password="${sfdc.password}" />
+	</salesforce:sfdc-config>
+	<http:request-config name="Slack_HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b7eff5ba-69da-49b4-82d0-9367b4a4ffb3" >
+		<http:request-connection host="asana-bhsdje.5sc6y6-1.usa-e2.cloudhub.io" />
+	</http:request-config>
+	<slack:config name="Slack_Connector_Config" doc:name="Slack Connector Config" doc:id="1840a36b-adf9-4110-b98d-c7f23f143542" >
+		<slack:slack-auth-connection >
+			<slack:oauth-authorization-code consumerKey="${slack.clientId}" consumerSecret="${slack.clientSecret}" resourceOwnerId="${slack.resourceOwnerId}"/>
+			<slack:oauth-callback-config listenerConfig="HTTP_Listener_config" callbackPath="${slack.callbackPath}" authorizePath="${slack.authorizePath}" externalCallbackUrl="${slack.externalCallbackUrl}"/>
+		</slack:slack-auth-connection>
+	</slack:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="8a32e573-bff4-424e-9171-5ec71bf8a431" />
+	<global-property doc:name="Global Property" doc:id="31c14947-22de-4075-843d-a9afaf8fb25a" name="Salesforce.OnModifiedObjectFilter1" value="Title='CEO'" />
+	<http:listener-config name="HTTP_Listener_config_8083" doc:name="HTTP Listener config" doc:id="dce5caaa-a6ff-458a-b340-9ff04f2d18e5" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="85d584be-49d8-4090-a7fa-07f62a5dabf9" basePath="/v3/company/9341452518076344" >
+		<http:request-connection protocol="HTTPS" host="sandbox-quickbooks.api.intuit.com" >
+			<http:authentication >
+				<oauth:authorization-code-grant-type localCallbackConfig="HTTP_Listener_config_8083" externalCallbackUrl="http://localhost:8083/callback" localAuthorizationUrl="http://localhost:8083/authorize" authorizationUrl="https://appcenter.intuit.com/connect/oauth2" clientId="ABD2BdZdFY326STckO0NuJzBXTcV0Z12VOcG90UypcrPeIUCrl" clientSecret="C4kOAxn9nryq8cP1DFY0os05cUVvJaqGu4prEhFC" scopes="com.intuit.quickbooks.accounting" tokenUrl="https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer" localCallbackConfigPath="/callback" state="8083_state"/>
+			</http:authentication>
+		</http:request-connection>
+	</http:request-config>
+	<flow name="Flow-OnModifiedObject" doc:id="e87d8f65-640b-4e86-92bb-037442ba2aa9" >
+		<salesforce:modified-object-listener objectType="Contact" doc:name="On Modified Object" doc:id="e2640761-fdd5-42b8-82c4-6d1f0086cf4e" config-ref="Salesforce_Config" triggersQuery="Title='President'" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="30000"/>
+			</scheduling-strategy>
+		</salesforce:modified-object-listener>
+		<set-variable value="#[payload]" doc:name="contactRecord" doc:id="9e0aa4a1-984b-43ab-97d6-bfa3e69b62db" variableName="contactRecord"/>
+		<set-variable value="#[payload.Quickbooks_Online_Customer_ID__c]" doc:name="qbCustomerId" doc:id="38b7c0f5-15ca-41dd-b59e-3a6b70e58eb6" variableName="qbCustomerId"/>
+		<quickbooks-online-connector-mule-4:customer63get doc:name="Get customer by customer id" doc:id="d4fe020c-05fc-4c10-bda8-de3ad7033e16" config-ref="Quickbooks_Online_Connector_Mule4Connector_Config" customerIdUriParam="#[vars.qbCustomerId]" minorversionQueryParam="${qb.minorVersion}" userAgentHeader="${qb.minorVersion}"/>
+		<choice doc:name="Choice" doc:id="80ecab7b-d5d2-468d-b970-fdb41f25b2ea" >
+			<when expression="#[payload.qbCustomerId == null]">
+				<ee:transform doc:name="Transform Message" doc:id="270b397e-d1ac-4081-834f-bb2b896dc498">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	BillAddr: {
+		Country: vars.contactRecord.MailingCountry default "",
+		PostalCode: vars.contactRecord.MailingPostalCode default "",
+		City: vars.contactRecord.MailingCity default "",
+		Line1: vars.contactRecord.MailingStreet default ""
+	},
+	PrimaryPhone: {
+		FreeFormNumber: vars.contactRecord.Phone default ""
+	},
+	DisplayName: vars.contactRecord.Name default "",
+	PrimaryEmailAddr: {
+		Address: vars.contactRecord.Email default ""
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<quickbooks-online-connector-mule-4:customer-post3 doc:name="Create customer" doc:id="17055731-4b8c-4bd1-a384-23954333f98c" config-ref="Quickbooks_Online_Connector_Mule4Connector_Config" minorversionQueryParam="${qb.minorVersion}" userAgentHeader="${qb.userAgent}" />
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="3c9a4762-7b22-4e5f-8652-8928517bc6f5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	PrimaryEmailAddr: {
+		Address: vars.contactRecord.Email default ""
+	},
+	DisplayName: vars.contactRecord.Name default "",
+	PrimaryPhone: {
+		FreeFormNumber: vars.contactRecord.Phone default ""
+	},
+	BillAddr: {
+		City: vars.contactRecord.MailingCity default "",
+		Line1: vars.contactRecord.MailingStreet default "",
+		PostalCode: vars.contactRecord.MailingPostalCode default ""
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<http:request method="POST" doc:name="QBO - Update customer" doc:id="c5c51fa3-85ca-4cf4-b102-9aa944adb8ec" config-ref="HTTP_Request_configuration" path="/customer?minorversion=73"/>
+				<logger level="INFO" doc:name="Logger" doc:id="57f4d345-9c2c-4358-8066-d50ff5943e5d" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="Flow-CDC" doc:id="91fbc1a7-3a89-4347-9a56-82d2312bb6a1" >
+		<salesforce:replay-channel-listener streamingChannel="/data/ChangeEvents" replayOption="FROM_LAST_REPLAY_ID" doc:name='Change Data Capture (CDC) to the "Title" field' doc:id="348030db-2b00-4905-98f9-ddf578fce8a1" config-ref="Salesforce_Config" autoReplay="true" />
+		<ee:transform doc:name="Transform Message" doc:id="1a63dd45-7c92-44e3-82f3-9e85c79c19ec">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.data.payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="fd09e67a-26a2-43f7-b848-0dac8cffcd03" >
+			<when expression='#[%dw 2.0&#10;output application/java&#10;var changedFields = payload.ChangeEventHeader.changedFields&#10;---&#10;contains(changedFields, "Title")]' >
+				<logger level="INFO" doc:name="Logger" doc:id="860a5eb0-38f2-4603-97f0-a426975ee132" message='#["contact updated, title changed"]' />
+				<salesforce:query doc:name="Query Salesforce for additional details about the Contact" doc:id="c3da131c-e282-4894-9d38-8cc7d480a299" config-ref="Salesforce_Config" >
+					<salesforce:salesforce-query ><![CDATA[SELECT Title, Quickbooks_Online_Customer_ID__c
+FROM Contact
+WHERE Id = ':id']]></salesforce:salesforce-query>
+					<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	"id" : payload.ChangeEventHeader.recordIds[0]
+}]]]></salesforce:parameters>
+				</salesforce:query>
+				<choice doc:name="Choice" doc:id="0495b4f4-fd20-47d5-9d58-db46de6fd3f5">
+					<when expression="#[payload.Quickbooks_Online_Customer_ID__c != null]">
+						<ee:transform doc:name="Transform Message" doc:id="05157aed-f7c8-4cca-95a0-0756e4b94f64">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "Title": payload[0].Title, 
+  "SyncToken": "0", 
+  "Id": payload[0].Quickbooks_Online_Customer_ID__c, 
+  "sparse": true
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+						<http:request method="POST" doc:name="QBO - Update customer" doc:id="e68147c0-7dbd-40c7-8d6d-a42d5c2c171c" config-ref="HTTP_Request_configuration" path="/customer?minorversion=73" />
+						<logger level="INFO" doc:name="Response" doc:id="96d094d2-69e5-48c6-b5f0-a6c3f5c2df3d" message="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]"/>
+					</when>
+					<otherwise >
+						<logger level="INFO" doc:name="Title changed but Quickbooks_Online_Customer_ID__c in Salesforce doesn't exist" doc:id="1526e6d5-8da3-4c2d-82a2-96dd070c5f21" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{	 &#10;	msg: "Title changed but Quickbooks_Online_Customer_ID__c in Salesforce doesnt exist"	&#10;}]'/>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Contact updated, Title not changed" doc:id="b4c2fdb0-96b2-4ce1-83cd-ca3c8573530c" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{	 &#10;	msg: "Contact updated, Title not changed"&#10;}]' />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

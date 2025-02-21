@@ -1,0 +1,97 @@
+{
+  "Invoice": {
+    "AllowIPNPayment": false,
+    "AllowOnlinePayment": false,
+    "AllowOnlineCreditCardPayment": false,
+    "AllowOnlineACHPayment": false,
+    "domain": "QBO",
+    "sparse": false,
+    "Id": "154",
+    "SyncToken": "0",
+    "MetaData": {
+      "CreateTime": "2024-07-30T14:58:55-07:00",
+      "LastModifiedByRef": {
+        "value": "9341452518076379"
+      },
+      "LastUpdatedTime": "2024-07-30T14:58:55-07:00"
+    },
+    "CustomField": [
+      
+    ],
+    "DocNumber": "1047",
+    "TxnDate": "2024-07-30",
+    "CurrencyRef": {
+      "value": "USD",
+      "name": "United States Dollar"
+    },
+    "LinkedTxn": [
+      
+    ],
+    "Line": [
+      {
+        "Id": "1",
+        "LineNum": 1,
+        "Amount": 101,
+        "DetailType": "SalesItemLineDetail",
+        "SalesItemLineDetail": {
+          "ItemRef": {
+            "value": "1",
+            "name": "Services"
+          },
+          "ItemAccountRef": {
+            "value": "1",
+            "name": "Services"
+          },
+          "TaxCodeRef": {
+            "value": "NON"
+          }
+        }
+      },
+      {
+        "Amount": 101,
+        "DetailType": "SubTotalLineDetail",
+        "SubTotalLineDetail": {
+          
+        }
+      }
+    ],
+    "TxnTaxDetail": {
+      "TotalTax": 0
+    },
+    "CustomerRef": {
+      "value": "1",
+      "name": "Amy's Bird Sanctuary"
+    },
+    "BillAddr": {
+      "Id": "2",
+      "Line1": "4581 Finch St.",
+      "City": "Bayshore",
+      "CountrySubDivisionCode": "CA",
+      "PostalCode": "94326",
+      "Lat": "INVALID",
+      "Long": "INVALID"
+    },
+    "ShipAddr": {
+      "Id": "2",
+      "Line1": "4581 Finch St.",
+      "City": "Bayshore",
+      "CountrySubDivisionCode": "CA",
+      "PostalCode": "94326",
+      "Lat": "INVALID",
+      "Long": "INVALID"
+    },
+    "FreeFormAddress": true,
+    "ShipFromAddr": {
+      "Id": "106",
+      "Line1": "123 Sierra Way",
+      "Line2": "San Pablo, CA  87999"
+    },
+    "DueDate": "2024-08-29",
+    "TotalAmt": 101,
+    "ApplyTaxAfterDiscount": false,
+    "PrintStatus": "NeedToPrint",
+    "EmailStatus": "NotSet",
+    "Balance": 101
+  },
+  "time": "2024-07-30T14:58:54.678-07:00"
+}

@@ -1,0 +1,8 @@
+{
+    "invoice": {
+        "amount": 150.00,
+        "itemName": "Consulting Service",
+        "itemId": "2",
+        "customerId": "19"
+    }
+}

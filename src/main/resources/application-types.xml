@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="CreateInvoiceResponse" format="json">
+      <types:shape format="weave" example="examples/Quickbooks-CreateInvoiceResponse.json"><![CDATA[%dw 2.0
+
+type CreateInvoiceResponse = {|
+  Invoice: {|
+    AllowIPNPayment: Boolean, 
+    AllowOnlinePayment: Boolean, 
+    AllowOnlineCreditCardPayment: Boolean, 
+    AllowOnlineACHPayment: Boolean, 
+    domain: String, 
+    sparse: Boolean, 
+    Id: String, 
+    SyncToken: String, 
+    MetaData: {|
+      CreateTime: String, 
+      LastModifiedByRef: {| value: String |}, 
+      LastUpdatedTime: String
+    |}, 
+    CustomField: Array<Any>, 
+    DocNumber: String, 
+    TxnDate: String, 
+    CurrencyRef: {|
+      value: String, 
+      name: String
+    |}, 
+    LinkedTxn: Array<Any>, 
+    Line: Array<{|      Id: String,       LineNum: Number {"typeId": "int"},       Amount: Number {"typeId": "int"},       DetailType: String,       SalesItemLineDetail: {|        ItemRef: {|          value: String,           name: String        |},         ItemAccountRef: {|          value: String,           name: String        |},         TaxCodeRef: {| value: String |}      |},       SubTotalLineDetail: {|  |}    |}>, 
+    TxnTaxDetail: {| TotalTax: Number {"typeId": "int"} |}, 
+    CustomerRef: {|
+      value: String, 
+      name: String
+    |}, 
+    BillAddr: {|
+      Id: String, 
+      Line1: String, 
+      City: String, 
+      CountrySubDivisionCode: String, 
+      PostalCode: String, 
+      Lat: String, 
+      Long: String
+    |}, 
+    ShipAddr: {|
+      Id: String, 
+      Line1: String, 
+      City: String, 
+      CountrySubDivisionCode: String, 
+      PostalCode: String, 
+      Lat: String, 
+      Long: String
+    |}, 
+    FreeFormAddress: Boolean, 
+    ShipFromAddr: {|
+      Id: String, 
+      Line1: String, 
+      Line2: String
+    |}, 
+    DueDate: String, 
+    TotalAmt: Number {"typeId": "int"}, 
+    ApplyTaxAfterDiscount: Boolean, 
+    PrintStatus: String, 
+    EmailStatus: String, 
+    Balance: Number {"typeId": "int"}
+  |}, 
+  time: String
+|} {"example": "{\\\"Invoice\\\":{\\\"AllowIPNPayment\\\":false,\\\"AllowOnlinePayment\\\":false,\\\"AllowOnlineCreditCardPayment\\\":false,\\\"AllowOnlineACHPayment\\\":false,\\\"domain\\\":\\\"QBO\\\",\\\"sparse\\\":false,\\\"Id\\\":\\\"154\\\",\\\"SyncToken\\\":\\\"0\\\",\\\"MetaData\\\":{\\\"CreateTime\\\":\\\"2024-07-30T14:58:55-07:00\\\",\\\"LastModifiedByRef\\\":{\\\"value\\\":\\\"9341452518076379\\\"},\\\"LastUpdatedTime\\\":\\\"2024-07-30T14:58:55-07:00\\\"},\\\"CustomField\\\":[],\\\"DocNumber\\\":\\\"1047\\\",\\\"TxnDate\\\":\\\"2024-07-30\\\",\\\"CurrencyRef\\\":{\\\"value\\\":\\\"USD\\\",\\\"name\\\":\\\"United States Dollar\\\"},\\\"LinkedTxn\\\":[],\\\"Line\\\":[{\\\"Id\\\":\\\"1\\\",\\\"LineNum\\\":1,\\\"Amount\\\":101,\\\"DetailType\\\":\\\"SalesItemLineDetail\\\",\\\"SalesItemLineDetail\\\":{\\\"ItemRef\\\":{\\\"value\\\":\\\"1\\\",\\\"name\\\":\\\"Services\\\"},\\\"ItemAccountRef\\\":{\\\"value\\\":\\\"1\\\",\\\"name\\\":\\\"Services\\\"},\\\"TaxCodeRef\\\":{\\\"value\\\":\\\"NON\\\"}}},{\\\"Amount\\\":101,\\\"DetailType\\\":\\\"SubTotalLineDetail\\\",\\\"SubTotalLineDetail\\\":{}}],\\\"TxnTaxDetail\\\":{\\\"TotalTax\\\":0},\\\"CustomerRef\\\":{\\\"value\\\":\\\"1\\\",\\\"name\\\":\\\"Amy's Bird Sanctuary\\\"},\\\"BillAddr\\\":{\\\"Id\\\":\\\"2\\\",\\\"Line1\\\":\\\"4581 Finch St.\\\",\\\"City\\\":\\\"Bayshore\\\",\\\"CountrySubDivisionCode\\\":\\\"CA\\\",\\\"PostalCode\\\":\\\"94326\\\",\\\"Lat\\\":\\\"INVALID\\\",\\\"Long\\\":\\\"INVALID\\\"},\\\"ShipAddr\\\":{\\\"Id\\\":\\\"2\\\",\\\"Line1\\\":\\\"4581 Finch St.\\\",\\\"City\\\":\\\"Bayshore\\\",\\\"CountrySubDivisionCode\\\":\\\"CA\\\",\\\"PostalCode\\\":\\\"94326\\\",\\\"Lat\\\":\\\"INVALID\\\",\\\"Long\\\":\\\"INVALID\\\"},\\\"FreeFormAddress\\\":true,\\\"ShipFromAddr\\\":{\\\"Id\\\":\\\"106\\\",\\\"Line1\\\":\\\"123 Sierra Way\\\",\\\"Line2\\\":\\\"San Pablo, CA  87999\\\"},\\\"DueDate\\\":\\\"2024-08-29\\\",\\\"TotalAmt\\\":101,\\\"ApplyTaxAfterDiscount\\\":false,\\\"PrintStatus\\\":\\\"NeedToPrint\\\",\\\"EmailStatus\\\":\\\"NotSet\\\",\\\"Balance\\\":101},\\\"time\\\":\\\"2024-07-30T14:58:54.678-07:00\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="qbinvoice" format="json">
+      <types:shape format="weave" example="examples/qbinvoice.json"><![CDATA[%dw 2.0
+
+type qbinvoice = {|
+  invoice: {|
+    amount: Number {"typeId": "double"}, 
+    itemName: String, 
+    itemId: String, 
+    customerId: String
+  |}
+|} {"example": "{\\\"invoice\\\":{\\\"amount\\\":150.00,\\\"itemName\\\":\\\"Consulting Service\\\",\\\"itemId\\\":\\\"2\\\",\\\"customerId\\\":\\\"19\\\"}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="qbCustomer" format="json">
+      <types:shape format="weave" example="examples/qbCustomer.json"><![CDATA[%dw 2.0
+
+type qbCustomer = {|
+  domain: String, 
+  PrimaryEmailAddr: {| Address: String |}, 
+  DisplayName: String, 
+  PreferredDeliveryMethod: String, 
+  GivenName: String, 
+  FullyQualifiedName: String, 
+  BillWithParent: Boolean, 
+  Job: Boolean, 
+  Title: String, 
+  BalanceWithJobs: Number {"typeId": "double"}, 
+  PrimaryPhone: {| FreeFormNumber: String |}, 
+  Active: Boolean, 
+  MetaData: {|
+    CreateTime: String, 
+    LastUpdatedTime: String
+  |}, 
+  BillAddr: {|
+    City: String, 
+    Line1: String, 
+    PostalCode: String, 
+    Lat: String, 
+    Long: String, 
+    CountrySubDivisionCode: String, 
+    Id: String
+  |}, 
+  MiddleName: String, 
+  Taxable: Boolean, 
+  Balance: Number {"typeId": "double"}, 
+  SyncToken: String, 
+  CompanyName: String, 
+  FamilyName: String, 
+  PrintOnCheckName: String, 
+  sparse: Boolean, 
+  Id: String
+|} {"example": "{\\\"domain\\\":\\\"QBO\\\",\\\"PrimaryEmailAddr\\\":{\\\"Address\\\":\\\"Surf@Intuit.com\\\"},\\\"DisplayName\\\":\\\"Bill's Windsurf Shop\\\",\\\"PreferredDeliveryMethod\\\":\\\"Print\\\",\\\"GivenName\\\":\\\"Bill\\\",\\\"FullyQualifiedName\\\":\\\"Bill's Windsurf Shop\\\",\\\"BillWithParent\\\":false,\\\"Job\\\":false,\\\"Title\\\":\\\"CEO\\\",\\\"BalanceWithJobs\\\":85.0,\\\"PrimaryPhone\\\":{\\\"FreeFormNumber\\\":\\\"(415) 444-6538\\\"},\\\"Active\\\":true,\\\"MetaData\\\":{\\\"CreateTime\\\":\\\"2014-09-11T16:49:28-07:00\\\",\\\"LastUpdatedTime\\\":\\\"2015-07-23T11:07:55-07:00\\\"},\\\"BillAddr\\\":{\\\"City\\\":\\\"Half Moon Bay\\\",\\\"Line1\\\":\\\"12 Ocean Dr.\\\",\\\"PostalCode\\\":\\\"94213\\\",\\\"Lat\\\":\\\"37.4307072\\\",\\\"Long\\\":\\\"-122.4295234\\\",\\\"CountrySubDivisionCode\\\":\\\"CA\\\",\\\"Id\\\":\\\"3\\\"},\\\"MiddleName\\\":\\\"Mac\\\",\\\"Taxable\\\":false,\\\"Balance\\\":85.0,\\\"SyncToken\\\":\\\"3\\\",\\\"CompanyName\\\":\\\"Bill's Windsurf Shop\\\",\\\"FamilyName\\\":\\\"Lucchini\\\",\\\"PrintOnCheckName\\\":\\\"Bill's Wind Surf Shop\\\",\\\"sparse\\\":false,\\\"Id\\\":\\\"2\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="eventPayload" format="json">
+      <types:shape format="weave" example="examples/eventPayload.json"><![CDATA[%dw 2.0
+
+type eventPayload = {|
+  LastModifiedDate: String, 
+  Title: String, 
+  ChangeEventHeader: {|
+    commitNumber: Number {"typeId": "double"}, 
+    commitUser: String, 
+    sequenceNumber: Number {"typeId": "int"}, 
+    entityName: String, 
+    changeType: String, 
+    changedFields: Array<String>, 
+    changeOrigin: String, 
+    transactionKey: String, 
+    commitTimestamp: Number {"typeId": "double"}, 
+    recordIds: Array<String>
+  |}
+|} {"example": "{\\\"LastModifiedDate\\\":\\\"2024-11-16T07:48:27.000Z\\\",\\\"Title\\\":\\\"CEO\\\",\\\"ChangeEventHeader\\\":{\\\"commitNumber\\\":12395621207176,\\\"commitUser\\\":\\\"005Hu00000QNVLOIA5\\\",\\\"sequenceNumber\\\":1,\\\"entityName\\\":\\\"Contact\\\",\\\"changeType\\\":\\\"UPDATE\\\",\\\"changedFields\\\":[\\\"Title\\\",\\\"LastModifiedDate\\\"],\\\"changeOrigin\\\":\\\"com\\/salesforce\\/api\\/soap\\/62.0;client=SfdcInternalAPI\\/\\\",\\\"transactionKey\\\":\\\"0000e504-1e2b-f53b-1a10-b9dabd0d23c3\\\",\\\"commitTimestamp\\\":1731743307000,\\\"recordIds\\\":[\\\"003Hu00003kKbmQIAS\\\"]}}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#dd7d34ca-0400-4d45-a330-e390c568cbbb">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="CreateInvoiceResponse"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#66d1cb21-8677-4a38-8ac7-bddc52b6fa30">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="CreateInvoiceResponse"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#4a56ce0e-a862-47df-b4c6-7e6d8230ebe8">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="CreateInvoiceResponse"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#8efbf512-95c6-420a-b88a-71e52cd07d20">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="qbinvoice"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#3c9a4762-7b22-4e5f-8652-8928517bc6f5">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="qbCustomer"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f3a1e912-fed7-41db-a3f1-ba3a93f86e8d">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="eventPayload"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#05157aed-f7c8-4cca-95a0-0756e4b94f64"/>
+</types:mule>
